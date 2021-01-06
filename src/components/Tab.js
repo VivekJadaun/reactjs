@@ -17,20 +17,20 @@ class Tab extends Component {
     // let $tabBody = $tabHead.('[data-behaviour="tab-item-header"]');
   }
 
-  // componentDidMount = () => {
-  //   this.setState({
-  //     currentClass : this.props.index === 0 ? 'active' : '',
-  //   });
-  // }
+  componentDidMount = () => {
+    this.setState({
+      currentClass : this.props.index === 0 ? 'active' : 'hidden',
+    });
+  }
 
   render() {
     return (
-      <div className="tab list-group-item w-100" data-behaviour={ 'tab-item-' + this.props.index }>
+      <div className={ 'tab list-group-item w-100 ' + this.state.currentClass} data-behaviour={ 'tab-item-' + this.props.index }>
 
         <div className="text-left list-group-header" data-behaviour={ 'tab-item-' + this.props.index + '-header'} onClick={ this.tabClickHandler }>
-          <a href='#' className="list-group-item-action">
+          <buttton className="list-group-item-action btn btn-light">
             <h3>{ this.props.name }</h3>
-          </a>
+          </buttton>
         </div>
 
         <div id={ 'item-' + this.props.index } className="d-flex w-100 justify-content-between" data-behaviour={ 'tab-item-' + this.props.index + '-body'}>
