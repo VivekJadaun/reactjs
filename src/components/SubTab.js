@@ -3,16 +3,17 @@ import React, { Component } from 'react';
 class SubTab extends Component {
   render() {
     return (
-      <div className="accordion-item">
-        <div className="text-left accordion-header">
-          <button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target={ '#collapsable-' + this.props.p_index + this.props.index } aria-expanded="true" aria-controls="collapsable">
-            <h3>{ this.props.name }</h3>
-          </button>
+      <div className="list-group-item " data-behaviour={ 'subtab-item-' + this.props.index }>
+        <div className="text-left">
+          <a href='#' className="list-group-item-action" >
+            <h4>{ this.props.name }</h4>
+          </a>
         </div>
-        <div id={ 'collapsable-' + this.props.p_index + this.props.index } className="accordion-collapse collapse show">
-          <div className="accordion-body">
+
+        <div id={ 'item-' + this.props.p_index + this.props.index } className="d-flex w-100 justify-content-between">
+          <p className="">
             { this.props.content }
-          </div>
+          </p>
         </div>
       </div>
     )

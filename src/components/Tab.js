@@ -3,25 +3,46 @@ import './Tab.css';
 import SubTab from './SubTab';
 
 class Tab extends Component {
+  state = {
+    currentClass : '',
+  }
+
+  tabClickHandler = (event) => {
+    // let $tabHead = event.currentTarget;
+    // // debugger
+    // let $tab = $tabHead.closest('[data-behaviour="tab-item"]');
+    // $tab.classList.toggle('active');
+    // $tab.querySelector('[data-behaviour="tab-item-body"]').classList.toggle('d-none');
+    
+    // let $tabBody = $tabHead.('[data-behaviour="tab-item-header"]');
+  }
+
+  // componentDidMount = () => {
+  //   this.setState({
+  //     currentClass : this.props.index === 0 ? 'active' : '',
+  //   });
+  // }
+
   render() {
     return (
-      <div className="tab accordion-item">
-        <div className="text-left accordion-header">
-          <button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target={ '#collapsable-' + this.props.index } aria-expanded="true" aria-controls="collapsable">
+      <div className="tab list-group-item w-100" data-behaviour={ 'tab-item-' + this.props.index }>
+
+        <div className="text-left list-group-header" data-behaviour={ 'tab-item-' + this.props.index + '-header'} onClick={ this.tabClickHandler }>
+          <a href='#' className="list-group-item-action">
             <h3>{ this.props.name }</h3>
-          </button>
+          </a>
         </div>
-        <div id={ 'collapsable-' + this.props.index } className="accordion-collapse collapse show">
-          <div className="accordion-body">
-            <div className="accordion">
-              { 
-                this.props.subTabs.map((subTab, index) => {
-                  return <SubTab name={ subTab.name } content={ subTab.content } key={ index } index={ index } p_index={ this.props.index }></SubTab>
-                }) 
-              }
-            </div>
+
+        <div id={ 'item-' + this.props.index } className="d-flex w-100 justify-content-between" data-behaviour={ 'tab-item-' + this.props.index + '-body'}>
+          <div className="list-group w-100">
+            { 
+              this.props.subTabs.map((subTab, index) => {
+                return <SubTab name={ subTab.name } content={ subTab.content } key={ index } index={ index } p_index={ this.props.index }></SubTab>
+              }) 
+            }
           </div>
         </div>
+
       </div>
     )
   }

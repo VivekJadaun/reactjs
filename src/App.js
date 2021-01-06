@@ -38,7 +38,14 @@ class App extends React.Component {
           },
         ]
       },
-    ]
+    ],
+    currentTab: 0,
+    currentSubTab: 0, 
+  }
+
+  componentDidMount = () => {
+    document.querySelector(`[data-behaviour="tab-item-${this.state.currentTab}"]`).classList.toggle('active');
+    document.querySelector(`[data-behaviour="subtab-item-${this.state.currentSubTab}"]`).classList.toggle('active');
   }
 
   render() {
@@ -46,11 +53,11 @@ class App extends React.Component {
       <div className="App">
         <header className="App-header">
           
-          <div className="navbar navbar-light bg-dark text-white text-center ps-3">Exercise 1 : Tabs & SubTabs</div>
+          <div className="navbar navbar-light bg-dark text-white text-center ps-3 navbar-fixed-top">Exercise 1 : Tabs & SubTabs</div>
 
           <div className="container-fluid mt-5">
 
-            <div className="accordion"> {
+            <div className="list-group"> {
               this.state.tabs.map((tab, index) => {
                 return (
                   <Tab name={ tab.name } subTabs={ tab.subTabs } className="" index={ index } key={ index }></Tab>
