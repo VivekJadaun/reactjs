@@ -38,7 +38,18 @@ class App extends React.Component {
           },
         ]
       },
-    ]
+    ],
+    activeTab: 0,
+    activeSubTab: 0,
+  }
+
+  tabToggleHandler = (event) => {
+    let $tab = event.target.closest('[data-behaviour^="tab-item"]');
+
+    this.setState({
+      activeTab: parseInt($tab.getAttribute('data-id')),
+      activeSubTab: 0,
+    });
   }
 
   render() {
@@ -50,10 +61,10 @@ class App extends React.Component {
 
           <div className="container-fluid mt-5">
 
-            <div className="accordion"> {
+            <div className="accordion" onClick={ this.tabToggleHandler }> {
               this.state.tabs.map((tab, index) => {
                 return (
-                  <Tab name={ tab.name } subTabs={ tab.subTabs } className="" index={ index } key={ index }></Tab>
+                  <Tab name={ tab.name } subTabs={ tab.subTabs } index={ index } key={ index } activeTab={ this.state.activeTab } activeSubTab={ this.state.activeSubTab }></Tab>
                 )
               })
             } </div>
