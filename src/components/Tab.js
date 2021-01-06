@@ -7,11 +7,11 @@ class Tab extends Component {
     return (
       <div className="tab accordion-item">
         <div className="text-left accordion-header">
-          <button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target={ '#collapsable-' + this.props.index } aria-expanded="true" aria-controls="collapsable">
+          <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target={ '#collapsable-' + this.props.index } aria-expanded="false" aria-controls="collapsable">
             <h3>{ this.props.name }</h3>
           </button>
         </div>
-        <div id={ 'collapsable-' + this.props.index } className="accordion-collapse collapse show">
+        <div id={ 'collapsable-' + this.props.index } className="accordion-collapse collapse ">
           <div className="accordion-body">
             <div className="accordion">
               { 

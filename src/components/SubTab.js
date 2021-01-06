@@ -9,7 +9,7 @@ class SubTab extends Component {
             <h3>{ this.props.name }</h3>
           </button>
         </div>
-        <div id={ 'collapsable-' + this.props.p_index + this.props.index } className="accordion-collapse collapse show">
+        <div id={ 'collapsable-' + this.props.p_index + this.props.index } className="accordion-collapse collapse ">
           <div className="accordion-body">
             { this.props.content }
           </div>
