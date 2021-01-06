@@ -4,40 +4,40 @@ import SubTab from './SubTab';
 
 class Tab extends Component {
   state = {
-    currentClass : '',
+    activeSubTab: 0, 
   }
 
-  tabClickHandler = (event) => {
-    // let $tabHead = event.currentTarget;
-    // // debugger
-    // let $tab = $tabHead.closest('[data-behaviour="tab-item"]');
-    // $tab.classList.toggle('active');
-    // $tab.querySelector('[data-behaviour="tab-item-body"]').classList.toggle('d-none');
-    
-    // let $tabBody = $tabHead.('[data-behaviour="tab-item-header"]');
-  }
+  subTabClickHandler = (event) => {
+    let $subtab = event.target.closest('[data-behaviour^="subtab-item"]');
 
-  componentDidMount = () => {
     this.setState({
-      currentClass : this.props.index === 0 ? 'active' : 'hidden',
+      activeSubTab: parseInt($subtab.getAttribute('data-id')),
     });
+  }
+
+  componentDidUpdate = () => {
+    if ((this.props.index !== this.props.activeTab) && (this.state.activeSubTab !== 0)) {
+      this.setState({
+        activeSubTab: 0,
+      });
+    }
   }
 
   render() {
     return (
-      <div className={ 'tab list-group-item w-100 ' + this.state.currentClass} data-behaviour={ 'tab-item-' + this.props.index }>
+      <div className="tab list-group-item w-100" data-behaviour={ 'tab-item-' + this.props.index } data-id={ this.props.index }>
 
-        <div className="text-left list-group-header" data-behaviour={ 'tab-item-' + this.props.index + '-header'} onClick={ this.tabClickHandler }>
-          <buttton className="list-group-item-action btn btn-light">
+        <div className="text-left list-group-header">
+          <button className="list-group-item-action btn btn-light">
             <h3>{ this.props.name }</h3>
-          </buttton>
+          </button>
         </div>
 
-        <div id={ 'item-' + this.props.index } className="d-flex w-100 justify-content-between" data-behaviour={ 'tab-item-' + this.props.index + '-body'}>
-          <div className="list-group w-100">
+        <div id={ 'item-' + this.props.index } className={ 'd-flex w-100 justify-content-between ' + (this.props.activeTab === this.props.index ? 'active' : 'hidden') } >
+          <div className="list-group w-100" onClick={ this.subTabClickHandler }>
             { 
               this.props.subTabs.map((subTab, index) => {
-                return <SubTab name={ subTab.name } content={ subTab.content } key={ index } index={ index } p_index={ this.props.index }></SubTab>
+                return <SubTab name={ subTab.name } content={ subTab.content } key={ index } index={ index } p_index={ this.props.index } activeSubTab={ this.state.activeSubTab }></SubTab>
               }) 
             }
           </div>

@@ -39,13 +39,16 @@ class App extends React.Component {
         ]
       },
     ],
-    currentTab: 0,
-    currentSubTab: 0, 
+    activeTab: 0,
+    defaultSubTab: 0, 
   }
 
-  componentDidMount = () => {
-    document.querySelector(`[data-behaviour="tab-item-${this.state.currentTab}"]`).classList.toggle('active');
-    document.querySelector(`[data-behaviour="subtab-item-${this.state.currentSubTab}"]`).classList.toggle('active');
+  tabClickHandler = (event) => {
+    let $tab = event.target.closest('[data-behaviour^="tab-item"]');
+
+    this.setState({
+      activeTab: parseInt($tab.getAttribute('data-id')),
+    });
   }
 
   render() {
@@ -57,10 +60,10 @@ class App extends React.Component {
 
           <div className="container-fluid mt-5">
 
-            <div className="list-group"> {
+            <div className="list-group" onClick={ this.tabClickHandler }> {
               this.state.tabs.map((tab, index) => {
                 return (
-                  <Tab name={ tab.name } subTabs={ tab.subTabs } className="" index={ index } key={ index }></Tab>
+                  <Tab name={ tab.name } subTabs={ tab.subTabs } activeTab={ this.state.activeTab } activeSubTab={ this.state.defaultSubTab } index={ index } key={ index }></Tab>
                 )
               })
             } </div>
