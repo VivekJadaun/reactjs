@@ -1,44 +1,11 @@
 import React from 'react';
 import './App.css';
-import Tab from './components/Tab';
+import Tab from './components/Tab/Tab';
+import constants from './constants.js';
 
 class App extends React.Component {
   state = {
-    tabs: [
-      {
-        name: 'introduction',
-        subTabs: [
-          { name: 'what is react.js',
-            content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-          },
-          { name: 'getting started',
-            content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-          }
-        ]
-      },
-      {
-        name: 'the instance',
-        subTabs: [
-          { name: 'creating a instance',
-            content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-          },
-          { name: 'data and methods',
-            content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-          },
-          { name: 'instance lifecycle hooks',
-            content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-          }
-        ]
-      },
-      {
-        name: 'list rendering',
-        subTabs: [
-          { name: 'mapping an array to elements',
-            content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-          },
-        ]
-      },
-    ],
+    ...constants,
     activeTab: 0,
     defaultSubTab: 0, 
   }
@@ -60,10 +27,12 @@ class App extends React.Component {
 
           <div className="container-fluid mt-5">
 
-            <div className="list-group" onClick={ this.tabClickHandler }> {
+            <div className="list-group" > {
               this.state.tabs.map((tab, index) => {
+                const { name, subTabs, id } = tab;
+
                 return (
-                  <Tab name={ tab.name } subTabs={ tab.subTabs } activeTab={ this.state.activeTab } activeSubTab={ this.state.defaultSubTab } index={ index } key={ index }></Tab>
+                  <Tab name={ name } subTabs={ subTabs } activeTab={ this.state.activeTab } activeSubTab={ this.state.defaultSubTab } index={ id } key={ id } tabClickHandler={ this.tabClickHandler }></Tab>
                 )
               })
             } </div>
