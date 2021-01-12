@@ -1,0 +1,15 @@
+.tab {
+  /*border: 1px solid #eee;*/
+  /*cursor: pointer;*/
+  width: 100%;
+  font-size: 12px;
+  color: black;
+}
+
+.active {
+  background-color: #cfe2ff !important;
+}
+
+a { 
+  text-decoration: none; 
+}
