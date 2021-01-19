@@ -2,9 +2,7 @@ import React from 'react';
 import constants from './constants.js';
 import './Form.css';
 import Input from '../Input/Input';
-
-const URL_PATTERN   = /^(https?:\/\/)?(w{3})?\w+([\-\.]{1}\w+)*\.[a-z]{2,5}(:\d{1,5})?(\/.*)?$/;
-const EMAIL_PATTERN = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+import Validation from '../../Helpers/Validation';
 
 class Form extends React.Component {
   constructor(props) {
@@ -36,8 +34,6 @@ class Form extends React.Component {
       return validation_result;
     });
 
-    console.log(this.isValidated);
-
     if (!this.isValidated) {
       this.setState(newState);
     } else {
@@ -59,13 +55,13 @@ class Form extends React.Component {
     Object.entries(validations).every(([key, value]) => {
       switch(key) {
         case 'required':
-          result = value ? this.validatePresence(input_value) : true;
+          result = value ? Validation.validatePresence(input_value) : true;
           break;
         case 'max_length':
-          result = this.validateMaxLength(input_value, value);
+          result = Validation.validateMaxLength(input_value, value);
           break;
         case 'regex':
-          result = this.validateRegex(input_value, value);
+          result = Validation.validateRegex(input_value, value);
           break;
         default: 
           result = false;
@@ -79,53 +75,22 @@ class Form extends React.Component {
   }
 
 
-  validatePresence = (input_value) => {
-    let result = false;
+  renderFormElements() {
+    const formElements = this.state.input_elements.map((userInput, index) => {
+      return <Input 
+        key={ userInput.id } 
+        id={ userInput.id } 
+        name={ userInput.id } 
+        type={ userInput.type } 
+        label={ userInput.label } 
+        hint={ userInput.hint } 
+        attributes={ userInput.attributes } 
+        error_msg= { userInput.error_msg }
+        is_valid={ userInput.is_valid }
+      ></Input>
+    })
 
-    switch(typeof(input_value)) {
-      case 'number':
-        result = true;
-        break;
-      case 'string':
-        result = input_value.trim() !== '';
-        break;
-      case 'boolean':
-        result = true;
-        break;
-      case 'object':
-        result = (input_value === null) ? false : !!Object.keys(input_value).length;
-        break;
-      default:
-        result = false;
-    }
-
-    return result;
-  }
-
-
-  validateMaxLength = (input_value, max_length) => {
-    if (typeof(input_value) === 'string') {
-      return input_value.length <= max_length;
-    }
-
-    return false;
-  }
-
-  validateRegex = (input_value, regex_pattern) => {
-    let result = false;
-
-    switch(regex_pattern) {
-      case 'email':
-        result = EMAIL_PATTERN.test(input_value);
-        break;
-      case 'url':
-        result = URL_PATTERN.test(input_value);
-        break;
-      default:
-        result = false;
-    }
-
-    return result;
+    return formElements;
   }
 
 
@@ -136,19 +101,7 @@ class Form extends React.Component {
 
         <div className="px-4 py-4">
           <div className="" >{
-            this.state.input_elements.map((userInput, index) => {
-              return <Input 
-                key={ userInput.id } 
-                id={ userInput.id } 
-                name={ userInput.id } 
-                type={ userInput.type } 
-                label={ userInput.label } 
-                hint={ userInput.hint } 
-                attributes={ userInput.attributes } 
-                error_msg= { userInput.error_msg }
-                is_valid={ userInput.is_valid }
-              ></Input>
-            })
+            this.renderFormElements()
           }</div>
 
           <div>
