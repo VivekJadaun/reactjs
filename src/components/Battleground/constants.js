@@ -1,14 +1,32 @@
 const constants = {
+  special_attack: 'special_attack',
+
+  heal: 'heal',
+
+  special_attack_limit_perc: 30,
+
+  opponent_move_delay_in_ms: 1000,
+
+  forfeit: 'forfeit',
+
+  forfeit_msg: 'You have surrendered! You lost',
+
+  victory_msg: 'Congrats! You\'ve won',
+
+  defeat_msg: 'You have been defeated! Please Try Again',
+
+  first_move: 'player',  
+
   player: {
     name: 'player',
     display_name: 'Player',
-    max_health: 100,
+    max_health: 50,
   },
 
   opponent: {
     name: 'monster',
     display_name: 'Monster',
-    max_health: 120,
+    max_health: 50,
     min_attack: 1, 
     max_attack: 20, 
   },
@@ -26,7 +44,7 @@ const constants = {
       name: 'special_attack',
       display_name: 'Special attack',
       min_damage: 10, 
-      max_damage: 20, 
+      max_damage: 50, 
       base_color: 'orange', 
       self_effect: false,
     },
