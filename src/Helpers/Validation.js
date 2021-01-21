@@ -5,32 +5,6 @@ const EMAIL_PATTERN = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
 class Validation {
 
-  // static validateInput = (validations, input_value = '') => {
-  //   let result = false;
-
-  //   Object.entries(validations).every(([key, value]) => {
-  //     switch(key) {
-  //       case 'required':
-  //         result = value ? self.validatePresence(input_value) : true;
-  //         break;
-  //       case 'max_length':
-  //         result = self.validateMaxLength(input_value, value);
-  //         break;
-  //       case 'regex':
-  //         result = self.validateRegex(input_value, value);
-  //         break;
-  //       default: 
-  //         result = false;
-  //     }
-
-  //     return result;
-  //   });
-
-  //   this.isValidated = this.isValidated && result;
-  //   return result;
-  // }
-
-
   static validatePresence = (input_value) => {
     let result = false;
 
