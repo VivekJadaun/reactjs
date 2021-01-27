@@ -2,10 +2,6 @@ import React, { Component } from 'react';
 import './Player.css';
 
 class Player extends Component {
-  // shouldComponentUpdate = (nextProps, nextState) => {
-  //   return this.props.health !== nextProps.health;  
-  // }
-
   render() {
     const {name, display_name, health, max_health, indicate_turn} = this.props;
     const style = { 
