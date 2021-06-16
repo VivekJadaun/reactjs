@@ -19,7 +19,7 @@ export default class Cart extends React.PureComponent {
                   <div class="col-md-8">
                     <div class="card-body">
                       <h5 class="card-title">{name}</h5>
-                      <p class="card-text">{price} {variant}</p>
+                      <p class="card-text">${price} {variant}</p>
                       <p class="text-danger btn" onClick={buyerAction}>REMOVE</p>
                     </div>
                   </div>
