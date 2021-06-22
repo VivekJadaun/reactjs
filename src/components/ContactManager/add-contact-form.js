@@ -2,7 +2,6 @@ import React from "react";
 import { connect } from "react-redux";
 import { find } from "lodash";
 
-// import { createContact } from "../../store/actions/contact";
 import { contact as contactActionType } from "../../constants/action-types";
 
 const { addContact } = contactActionType;
