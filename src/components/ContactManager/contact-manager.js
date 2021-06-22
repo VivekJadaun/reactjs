@@ -1,10 +1,10 @@
 import React from "react";
-import AddContactForm from './AddContactForm';
-import ContactList from './ContactList';
+import AddContactForm from './add-contact-form';
+import ContactList from './contact-list';
 
 class ContactManager extends React.Component {
 	render = () => (
-		<div className="container-fluid px-4 py-4">
+		<div className="container-fluid row">
 			<AddContactForm />
 			<ContactList />
 		</div>
