@@ -1,26 +1,30 @@
 import React from "react";
 import ArithematicQuiz from '../ArithematicQuiz/arithematic-quiz'
 
-const quizDefaults = {
-	minLimit: 0,
-	maxLimit: 20,
-	questionsCount: 2,
-	timerDurationInSec: 5,
-	operators: ['+', '-', '*', '/'],
-};
+import quizDefaults from "../../constants/quiz-defaults";
 
 class ArithematicQuizGenerator extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = this.props.useDefault ? {...quizDefaults} : {
-			quizes: [],
+			quizzes: [],
 		};
 	}
 
 	validateQuizForm = (e) => {
 		e.preventDefault();
 		const formInputs = e.target;
-		console.log(formInputs);
+		const quiz = {
+			minLimit: formInputs['minLimit'].value,
+			maxLimit: formInputs['maxLimit'].value,
+			questionsCount: formInputs['questionsCount'].value,
+			timerDurationInSec: formInputs['timerDurationInSec'].value,
+			operators: formInputs['operators'].value,
+		};
+		const { quizzes } = this.state;
+		this.setState({
+			quizzes: quizzes.concat(quiz),
+		}, formInputs.clear);
 	}
 
 	renderQuizGeneratorForm = () => (
@@ -59,19 +63,19 @@ class ArithematicQuizGenerator extends React.Component {
 	  		</div>
 	  		<div className="col-6">
 			    <div className="form-check form-check-inline">
-					  <input className="form-check-input" type="checkbox" name="operator+" id="operator+" value="+" />
+					  <input className="form-check-input" type="checkbox" name="operators[]" id="operator+" value="+" autoFocus/>
 					  <label className="form-check-label" htmlFor="operator+">+</label>
 					</div>
 			    <div className="form-check form-check-inline">
-					  <input className="form-check-input" type="checkbox" name="operator-" id="operator-" value="-" />
+					  <input className="form-check-input" type="checkbox" name="operators[]" id="operator-" value="-" />
 					  <label className="form-check-label" htmlFor="operator-">-</label>
 					</div>
 			    <div className="form-check form-check-inline">
-					  <input className="form-check-input" type="checkbox" name="operator*" id="operator*" value="*" />
+					  <input className="form-check-input" type="checkbox" name="operators[]" id="operator*" value="*" />
 					  <label className="form-check-label" htmlFor="operator*">*</label>
 					</div>
 			    <div className="form-check form-check-inline">
-					  <input className="form-check-input" type="checkbox" name="operator/" id="operator/" value="/" />
+					  <input className="form-check-input" type="checkbox" name="operators[]" id="operator/" value="/" />
 					  <label className="form-check-label" htmlFor="operator/">/</label>
 					</div>
 		  	</div>

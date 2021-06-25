@@ -10,7 +10,7 @@ class ArithematicQuiz extends React.Component {
 			currentQuestion: 1,
 			questionsLog: [{
 				question: question, 
-				answer: eval(question), 
+				answer: this.evaluateAnswer(question), 
 				response: undefined,
 			}],
 		};
@@ -27,9 +27,11 @@ class ArithematicQuiz extends React.Component {
 
 	getRandomQuestion = () => `${this.getRandomNumber()} ${this.getRandomOperator()} ${this.getRandomNumber()}`;
 
+	evaluateAnswer = question => Math.round(eval(question) * 100) / 100;
+
 	generateNextQuestion = () => {
 		const question = this.getRandomQuestion()
-		const answer = eval(question);
+		const answer = this.evaluateAnswer(question);
 		const { questionsLog, currentQuestion } = this.state;
 		const questionEntry = { question: question, answer: answer, response: undefined };
 		this.setState({
@@ -40,17 +42,28 @@ class ArithematicQuiz extends React.Component {
 	}
 
 	evaluateResponse = (e) => {
-		const response = e?.target;
+		e.preventDefault();
+		const response = eval(e.target['response'].value);
+		const { currentQuestion, questionsLog, score } = this.state;
+		let newQuestionsLog = [...questionsLog];
+		let lastQuestion = newQuestionsLog[currentQuestion - 1];
+		lastQuestion.response = response;
+		const newScore = response === lastQuestion.answer ? score + 1 : score;
+		this.setState({ 
+			questionsLog: newQuestionsLog,
+			score: newScore,
+		});
 	}
 
 	startTimerOrProceedToNextQuestion = () => {
 		const { timer } = this.state;
 		this.timerId = setTimeout(() => {
 			this.setState({ timer: timer - 1 }, () => {
+				const { timer, currentQuestion } = this.state;
 				if (timer === 0) {
 					clearTimeout(this.timerId);
 					this.evaluateResponse();
-					if (this.state.currentQuestion <= this.props.questionsCount) {
+					if (currentQuestion < this.props.questionsCount) {
 						this.generateNextQuestion();
 					}
 				}
@@ -95,9 +108,10 @@ class ArithematicQuiz extends React.Component {
 		const { title = 'Details of quiz', minLimit, maxLimit, questionsCount, timerDurationInSec, operators } = this.props;
 		const { currentQuestion, timer, score, questionsLog } = this.state;
 		const lastQuestion = questionsLog[questionsLog.length - 1].question;
+		const quizOver = (currentQuestion === questionsCount && timer === 0);
 
 		return (
-			<div className="">
+			<div className="" style={{height: "100vmax"}}>
 				<div className="d-flex gap-3">
 					<span>Min Limit: { minLimit }</span>
 					<span>Max Limit: { maxLimit }</span>
@@ -116,13 +130,15 @@ class ArithematicQuiz extends React.Component {
 					</div>
 					<div className="">
 						{
-							currentQuestion > questionsCount 
-							? this.renderResults() : (
-								<div className="input-group input-group-lg mb-3">
-								  <span className="input-group-text" id="inputGroup-sizing-default">{lastQuestion}</span>
-								  <input type="number" className="form-control" autoFocus/>
-								  <button className="btn btn-outline-secondary" type="button" onClick={this.evaluateResponse}>Next</button>
-								</div>
+							quizOver ? this.renderResults() : (
+								<form onSubmit={this.evaluateResponse}>
+									<div className="input-group input-group-lg mb-3">
+									  <span className="input-group-text" id="inputGroup-sizing-default">{lastQuestion}</span>
+									  <input type="number" step='0.01' name="response" className="form-control" autoFocus/>
+									  <button className="btn btn-outline-secondary" type="submit">Next</button>
+									</div>
+									<div>Score: {score}</div>
+								</form>
 							)
 						}
 					</div>
