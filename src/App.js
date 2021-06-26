@@ -1,23 +1,11 @@
 import logo from './logo.svg';
 import './App.css';
+import ArithematicQuizGenerator from './components/ArithematicQuizGenerator/arithematic-quiz-generator'
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Hello World
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>a
+    <div className="App App-header">
+      <ArithematicQuizGenerator />
     </div>
   );
 }
