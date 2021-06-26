@@ -5,7 +5,7 @@ import ArithematicQuizGenerator from './components/ArithematicQuizGenerator/arit
 function App() {
   return (
     <div className="App App-header">
-      <ArithematicQuizGenerator/>
+      <ArithematicQuizGenerator useDefault/>
     </div>
   );
 }

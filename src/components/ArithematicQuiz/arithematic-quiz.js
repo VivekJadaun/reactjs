@@ -3,19 +3,16 @@ import React from "react";
 class ArithematicQuiz extends React.Component {
 	constructor(props) {
 		super(props);
-		const question = this.getRandomQuestion();
 		this.state = {
 			score: 0,
 			timer: this.props.timerDurationInSec,
 			currentQuestion: 1,
-			questionsLog: [{
-				question: question, 
-				answer: this.evaluateAnswer(question), 
-				response: undefined,
-			}],
+			questionsLog: [{ ...this.getNextQuestion() }],
 		};
 		this.timerId = undefined;
 	}
+
+	getQuizForm = () => document.querySelector('[data-behaviour="response-form"]');
 
 	getRandomNumber = () => {
     const min = Math.ceil(this.props.minLimit);
@@ -29,56 +26,87 @@ class ArithematicQuiz extends React.Component {
 
 	evaluateAnswer = question => Math.round(eval(question) * 100) / 100;
 
-	generateNextQuestion = () => {
+	getNextQuestion = () => {
 		const question = this.getRandomQuestion()
 		const answer = this.evaluateAnswer(question);
-		const { questionsLog, currentQuestion } = this.state;
-		const questionEntry = { question: question, answer: answer, response: undefined };
-		this.setState({
-			questionsLog: [questionEntry].concat(questionsLog),
-			currentQuestion: currentQuestion + 1,
-			timer: this.props.timerDurationInSec,
-		});
+		return { question: question, answer: answer, response: undefined };
 	}
 
-	evaluateResponse = (e) => {
+	getLatestScore = (response) => {
+		const { score, questionsLog, currentQuestion } = this.state;
+		const lastQuestion = questionsLog[currentQuestion - 1];
+		return lastQuestion.answer === response ? score + 1 : score
+	}
+
+	submitResponse = (e) => {
 		e.preventDefault();
-		const response = eval(e.target['response'].value);
-		const { currentQuestion, questionsLog, score } = this.state;
-		let newQuestionsLog = [...questionsLog];
-		let lastQuestion = newQuestionsLog[currentQuestion - 1];
-		lastQuestion.response = response;
-		const newScore = response === lastQuestion.answer ? score + 1 : score;
-		this.setState({ 
-			questionsLog: newQuestionsLog,
+		this.evaluateResponse(e.target['response'].value);
+	};
+
+	evaluateResponse = (userResponse) => {
+		const response = eval(userResponse);
+		const { questionsLog, currentQuestion } = this.state;
+		const { questionsCount, timerDurationInSec } = this.props;
+		let newQuestionsLog = questionsLog.map(question => question);
+		const newScore = this.getLatestScore(response);
+		const nextCurrentQuestion = currentQuestion + 1;
+
+		newQuestionsLog[currentQuestion - 1].response = response;
+
+		if (nextCurrentQuestion <= questionsCount) {
+			const nextQuestion = this.getNextQuestion();
+			newQuestionsLog.push(nextQuestion);
+		}
+
+		clearTimeout(this.timerId);
+
+		this.setState({
 			score: newScore,
-		});
+			questionsLog: newQuestionsLog,
+			currentQuestion: nextCurrentQuestion,
+			timer: currentQuestion === questionsCount ? 0 : timerDurationInSec,
+		}, () => this.getQuizForm()?.reset());
 	}
 
-	startTimerOrProceedToNextQuestion = () => {
+	decrementTimer = () => {
 		const { timer } = this.state;
+
 		this.timerId = setTimeout(() => {
-			this.setState({ timer: timer - 1 }, () => {
-				const { timer, currentQuestion } = this.state;
+			this.setState({ 
+				timer: timer - 1, 
+			}, () => {
+				const { timer } = this.state;
 				if (timer === 0) {
-					clearTimeout(this.timerId);
 					this.evaluateResponse();
-					if (currentQuestion < this.props.questionsCount) {
-						this.generateNextQuestion();
-					}
 				}
 			});
 		}, 1000);
 	}
 
-	componentDidMount = () => this.startTimerOrProceedToNextQuestion();
+	componentDidMount = () => this.decrementTimer();
 
-	componentDidUpdate = () => this.startTimerOrProceedToNextQuestion();
+	componentDidUpdate = () => {
+		const { timer, currentQuestion } = this.state;
+		const { questionsCount } = this.props;
+		const isNotLastQuestion = currentQuestion <= questionsCount;
+
+		if (timer > 0) {
+			this.decrementTimer();
+		}
+
+		if (timer === 0 && isNotLastQuestion) {
+			const responseForm = this.getQuizForm();
+			const response = eval(responseForm['response'].value);
+			this.evaluateResponse(response);
+		}
+	};
 
 	renderResults = () => {
+		const { score } = this.state;
 		return (
 			<div className="">
-				<table class="table text-white table-hover">
+				<div className="bg-warning text-dark text-center fs-2">Final Score: { score }</div>
+				<table className="table text-white table-hover">
 				  <thead>
 				    <tr>
 				      <th scope="col">#</th>
@@ -90,7 +118,7 @@ class ArithematicQuiz extends React.Component {
 				  <tbody>
 				  	{
 				  		this.state.questionsLog.map(({ question, answer, response }, idx) => (
-						    <tr className={`${answer === response ? 'table-success' : (response ? 'table-danger' : 'table-light')}`}>
+						    <tr key={idx} className={`${answer === response ? 'table-success' : (response ? 'table-danger' : 'table-light')}`}>
 						      <th scope="row">{ idx + 1}</th>
 						      <td>{ question }</td>
 						      <td>{ answer }</td>
@@ -105,43 +133,48 @@ class ArithematicQuiz extends React.Component {
 	};
 
 	render = () => {
-		const { title = 'Details of quiz', minLimit, maxLimit, questionsCount, timerDurationInSec, operators } = this.props;
+		const { title, minLimit, maxLimit, questionsCount, timerDurationInSec, operators } = this.props;
 		const { currentQuestion, timer, score, questionsLog } = this.state;
 		const lastQuestion = questionsLog[questionsLog.length - 1].question;
-		const quizOver = (currentQuestion === questionsCount && timer === 0);
+		const quizOver = (currentQuestion > questionsCount && timer === 0);
 
 		return (
-			<div className="" style={{height: "100vmax"}}>
-				<div className="d-flex gap-3">
-					<span>Min Limit: { minLimit }</span>
-					<span>Max Limit: { maxLimit }</span>
-					<span>Questions Count: { questionsCount }</span>
-					<span>Timer: { timerDurationInSec }</span>
+			<div className="border border-1 border-white px-2 mb-2" style={{maxHeight: "35vmax", overflowY: "auto"}}>
+				<div className="container-fluid m-0 p-0 row">
+					<div className="text-uppercase text-start fs-3 col-4 p-0 m-0">
+						{title}
+					</div>
+					<div className="col-8 text-end pt-2">
+						<span className="px-2 ">Min Limit: { minLimit }</span>
+						<span className="px-2 ">Max Limit: { maxLimit }</span>
+						<span className="px-2 ">Questions Count: { questionsCount }</span>
+						<span className="px-2 ">Timer: { timerDurationInSec }</span>
+					</div>
 				</div>
 
 				<div className="">
-					<div className="row">
-						<div className="text-start col-6">
-							Question No: { currentQuestion }
-						</div>
-						<div className="text-end col-6">
-							Time Left: { timer }
-						</div>
-					</div>
-					<div className="">
-						{
-							quizOver ? this.renderResults() : (
-								<form onSubmit={this.evaluateResponse}>
+					{
+						quizOver ? this.renderResults() : (
+							<div className="">
+								<div className="row">
+									<div className="text-start col-6">
+										Question No: { currentQuestion }
+									</div>
+									<div className="text-end col-6">
+										Time Left: { timer }
+									</div>
+								</div>
+								<form onSubmit={this.submitResponse} data-behaviour="response-form">
 									<div className="input-group input-group-lg mb-3">
 									  <span className="input-group-text" id="inputGroup-sizing-default">{lastQuestion}</span>
-									  <input type="number" step='0.01' name="response" className="form-control" autoFocus/>
+									  <input autoComplete="off" type="number" step='0.01' name="response" className="form-control" autoFocus/>
 									  <button className="btn btn-outline-secondary" type="submit">Next</button>
 									</div>
 									<div>Score: {score}</div>
 								</form>
-							)
-						}
-					</div>
+							</div>
+						)
+					}
 				</div>
 			</div>
 		);
